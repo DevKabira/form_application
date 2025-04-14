@@ -1,0 +1,35 @@
+Font-family: Poppins
+
+Font-weights:
+	-> Light - w300
+	-> Regular - w400
+	-> Medium - w500
+	
+Colors:
+	-> Black - 0xFF171717
+	-> Gray - 0xFFC5C5C5
+	-> White - 0xFFFFFFFF 
+	
+Border-radius: 4.0
+
+Font-sizes:
+	-> XL - 20.0
+	-> L - 16.0
+	-> M - 14.0
+	-> S - 12.0
+	
+Paddings:
+	-> B - 16.0
+	-> S - 12.0
+	
+Gaps:
+	-> B - 12.0
+	-> S - 8.0
+	
+Icons:
+	-> Views: open_in_new
+	-> Delete: delete
+	-> Edit: edit_square
+	-> Add: add
+	-> Close: close
+    
