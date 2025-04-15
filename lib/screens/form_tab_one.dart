@@ -57,15 +57,13 @@ class _FormTabOneState extends State<FormTabOne> {
                       lastDate: DateTime.utc(2100),
                       initialDate: DateTime.now(),
                     );
-                    if (date != null) {
-                      String formattedDate = DateFormat(
-                        'dd-MM-yyyy',
-                      ).format(date);
-                      setState(() {
-                        dateController.text = formattedDate;
-                      });
-                    }
-                  },
+                    String formattedDate = DateFormat(
+                      'dd-MM-yyyy',
+                    ).format(date!);
+                    setState(() {
+                      dateController.text = formattedDate;
+                    });
+                                    },
                 ),
                 SizedBox(height: kLargeGap),
                 DropdownButtonFormField(
