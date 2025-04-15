@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:form_application/screens/form_tab_one.dart';
+import 'package:form_application/screens/form_tab_three.dart';
+import 'package:form_application/screens/form_tab_two.dart';
 import 'package:form_application/utils/constants.dart';
-import 'package:form_application/widgets/textfield_widget.dart';
 
 class FormScreen extends StatelessWidget {
   const FormScreen({super.key});
@@ -15,17 +17,29 @@ class FormScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: kLargePadding,
-          child: Column(
-            children: [
-              TextfieldWidget(title: 'First Name', hint: 'Enter here', type: 'text',),
-              SizedBox(height: kLargeGap),
-              TextfieldWidget(title: 'Last Name', hint: 'Enter here', type: 'text',),
-              SizedBox(height: kLargeGap),
-              TextfieldWidget(title: 'DOB', hint: 'Choose one', type: 'date',),
-            ],
+          child: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              backgroundColor: kWhite,
+              appBar: TabBar(
+                indicatorColor: kBlack,
+                labelColor: kBlack,
+                unselectedLabelStyle: textMediumGray,
+                tabs: [
+                  Tab(child: Text('1')),
+                  Tab(child: Text('2')),
+                  Tab(child: Text('3')),
+                ],
+              ),
+              body: const TabBarView(
+                children: [FormTabOne(), FormTabTwo(), FormTabThree()],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 }
+
+

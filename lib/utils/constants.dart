@@ -119,3 +119,22 @@ AppBar kAppBar(String title, Icon icon, VoidCallback onTap) {
     actions: [GestureDetector(onTap: onTap, child: icon)],
   );
 }
+
+// InputDecoration
+InputDecoration kInputDecoration(String lable, String hint) {
+  return InputDecoration(
+    floatingLabelStyle: textMediumBlack,
+    labelText: lable,
+    labelStyle: textMediumGray,
+    hintText: hint,
+    hintStyle: textMediumGray,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(4.0),
+      borderSide: BorderSide(color: kGray),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(4.0),
+      borderSide: BorderSide(color: kBlack),
+    ),
+  );
+}
