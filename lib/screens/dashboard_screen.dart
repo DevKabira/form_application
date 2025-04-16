@@ -20,9 +20,9 @@ class DashboardScreen extends StatelessWidget {
           padding: kLargePadding,
           child: Column(
             children: [
-              CardWidget(title: 'Kabeer'),
+              CardWidget(title: 'Kabeer', id: 10,),
               SizedBox(height: kLargeGap),
-              CardWidget(title: 'Sohum'),
+              CardWidget(title: 'Sohum', id: 2,),
             ],
           ),
         ),

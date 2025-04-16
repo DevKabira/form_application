@@ -1,44 +1,53 @@
 class PersonalDetails {
-  int _id = 0;
-  String _firstName = '';
-  String _lastName = '';
-  String _dateOfBirth = '';
-  String _gender = '';
+  int? id;
+  String? firstName;
+  String? lastName;
+  String? dateOfBirth;
+  String? gender;
 
+  PersonalDetails({
+    this.firstName,
+    this.lastName,
+    this.dateOfBirth,
+    this.gender,
+  });
+  PersonalDetails.withId({
+    this.id,
+    this.firstName,
+    this.lastName,
+    this.dateOfBirth,
+    this.gender,
+  });
 
-  PersonalDetails(this._firstName, this._lastName, this._dateOfBirth, this._gender);
-  PersonalDetails.withId(this._id, this._firstName, this._lastName, this._dateOfBirth, this._gender);
-  
-  int get id => _id;
-  String get firstName => _firstName;
-  String get lastName => _lastName;
-  String get dateOfBirth => _dateOfBirth;
-  String get gender => _gender;
+  int get getId => id!;
+  String get getFirstName => firstName!;
+  String get getLastName => lastName!;
+  String get getDateOfBirth => dateOfBirth!;
+  String get getRender => gender!;
 
-  set firstName(String firstName) => _firstName = firstName;
-  set lastName(String lastName) => _lastName = lastName;
-  set dateOfBirth(String dateOfBirth) => _dateOfBirth = dateOfBirth;
-  set gender(String gender) => _gender = gender;
+  set setFirstName(String firstName) => this.firstName = firstName;
+  set setLastName(String lastName) => this.lastName = lastName;
+  set setDateOfBirth(String dateOfBirth) => this.dateOfBirth = dateOfBirth;
+  set setGender(String gender) => this.gender = gender;
 
   Map<String, dynamic> toMap() {
-
     var map = <String, dynamic>{};
-    if (_id != 0){
-      map['id'] = _id;
+    if (id != 0) {
+      map['id'] = id;
     }
-    map['firstName'] = _firstName;
-    map['lastName'] = _lastName;
-    map['dateOfBirth'] = _dateOfBirth;
-    map['gender'] = _gender;
+    map['first_name'] = firstName;
+    map['last_name'] = lastName;
+    map['date_of_birth'] = dateOfBirth;
+    map['gender'] = gender;
 
     return map;
   }
 
   PersonalDetails.fromMapObject(Map<String, dynamic> map) {
-    _id = map['id'];
-    _firstName = map['firstName'];
-    _lastName = map['lastName'];
-    _dateOfBirth = map['dateOfBirth'];
-    _gender = map['gender'];
+    id = map['id'];
+    firstName = map['firstName'];
+    lastName = map['lastName'];
+    dateOfBirth = map['dateOfBirth'];
+    gender = map['gender'];
   }
 }

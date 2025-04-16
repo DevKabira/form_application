@@ -1,28 +1,58 @@
 import 'package:flutter/material.dart';
+import 'package:form_application/models/contact_details.dart';
 import 'package:form_application/utils/constants.dart';
+import 'package:form_application/utils/database_helper.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
 
 class FormTabThree extends StatefulWidget {
-  const FormTabThree({super.key});
+  final int? personalDetailsId;
+
+  const FormTabThree({super.key, required this.personalDetailsId});
 
   @override
-  State<FormTabThree> createState() => _FormTabThreeState();
+  State<FormTabThree> createState() => _NewTabThreeState();
 }
 
-enum ContactOptions { phone, email }
+enum ContactType { phone, email }
 
-class _FormTabThreeState extends State<FormTabThree> {
-  final _controller = TextEditingController();
+class _NewTabThreeState extends State<FormTabThree> {
+  final DatabaseHelper databaseHelper = DatabaseHelper();
+
   final otpController = OtpFieldController();
+  ContactType? _contactType;
+  String? _verificationCode;
+  int _isVerified = 0;
+  bool canSendOtp = false;
+  bool handleOtp = false;
   bool isLoading = false;
-  bool otpField = false;
-  String? code;
 
-  ContactOptions? _contactOptions = ContactOptions.phone;
+  void handleSendOtp() {
+    setState(() {
+      _isVerified = 1;
+      handleOtp = true;
+    });
+  }
 
-  void onPress() {}
+  void onPress() async {
+    int personalDetailsId = widget.personalDetailsId!;
+    int isVerified = _isVerified;
+    String contactType = _contactType!.name;
+    String contactValue = _verificationCode!;
+
+    ContactDetails contactDetails = ContactDetails(
+      personalDetailsId: personalDetailsId,
+      isVerified: isVerified,
+      contactType: contactType,
+      contactValue: contactValue,
+    );
+
+    int result = await databaseHelper.insertContactDetails(contactDetails);
+    if (result > 0 && mounted) {
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,134 +61,126 @@ class _FormTabThreeState extends State<FormTabThree> {
       body: SingleChildScrollView(
         padding: kLargePadding,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Contact Details', style: textLargeBlack),
             SizedBox(height: kExtraLargeGap),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Verify', style: textMediumBlack),
+                Text(
+                  'Please verify one of the following',
+                  style: textMediumBlack,
+                ),
+                SizedBox(height: kSmallGap),
                 Column(
                   children: [
-                    ListTile(
-                      title: Text('Phone'),
-                      leading: Radio<ContactOptions>(
-                        fillColor: WidgetStateProperty.all(kBlack),
-                        value: ContactOptions.phone,
-                        groupValue: _contactOptions,
-                        onChanged: (ContactOptions? value) {
-                          setState(() {
-                            _contactOptions = value;
-                          });
-                        },
-                      ),
+                    RadioListTile(
+                      activeColor: kBlack,
+                      title: Text('Phone', style: textMediumBlack),
+                      value: ContactType.phone,
+                      groupValue: _contactType,
+                      onChanged: (ContactType? val) {
+                        setState(() {
+                          _contactType = val!;
+                        });
+                      },
                     ),
-                    ListTile(
-                      title: Text('Email'),
-                      leading: Radio<ContactOptions>(
-                        fillColor: WidgetStateProperty.all(kBlack),
-                        value: ContactOptions.email,
-                        groupValue: _contactOptions,
-                        onChanged: (ContactOptions? value) {
-                          setState(() {
-                            _contactOptions = value;
-                          });
-                        },
-                      ),
+                    RadioListTile(
+                      activeColor: kBlack,
+                      title: Text('Email', style: textMediumBlack),
+                      value: ContactType.email,
+                      groupValue: _contactType,
+                      onChanged: (ContactType? val) {
+                        setState(() {
+                          _contactType = val!;
+                        });
+                      },
                     ),
                   ],
                 ),
-                SizedBox(height: kLargeGap),
-                (_contactOptions == ContactOptions.phone)
+                SizedBox(height: kSmallGap),
+                _contactType != null
                     ? TextFormField(
-                      controller: _controller,
                       decoration: kInputDecoration(
-                        'Phone',
+                        '${_contactType!.name[0].toUpperCase()}${_contactType!.name.substring(1).toLowerCase()}',
                         'Enter here',
                       ).copyWith(
-                        suffix: GestureDetector(
-                          onTap: () {
-                            if (_controller.text.length == 10) {
-                              setState(() {
-                                otpField = true;
-                              });
-                            }
-                          },
-                          child: Text(
-                            'Send OTP',
-                            style: textMediumGray.copyWith(color: Colors.green),
-                          ),
-                        ),
+                        suffix:
+                            canSendOtp
+                                ? GestureDetector(
+                                  onTap: handleSendOtp,
+                                  child: Text(
+                                    'Send OTP',
+                                    style: textMediumGray.copyWith(
+                                      color: Colors.indigo,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                                : null,
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          value.length == 10
+                              ? canSendOtp = true
+                              : canSendOtp = false;
+                        });
+                      },
                     )
-                    : TextField(
-                      controller: _controller,
-                      decoration: kInputDecoration(
-                        'Email',
-                        'Enter here',
-                      ).copyWith(
-                        suffix: GestureDetector(
-                          onTap: () {
-                            if (_controller.text.contains('@')) {
-                              setState(() {
-                                otpField = true;
-                              });
-                            }
-                          },
-                          child: Text(
-                            'Send OTP',
-                            style: textMediumGray.copyWith(color: Colors.green),
-                          ),
-                        ),
-                      ),
-                    ),
-                SizedBox(height: kExtraLargeGap),
-                (otpField)
+                    : Container(),
+                handleOtp
                     ? Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text('Verification Code', style: textMediumBlack),
+                        SizedBox(height: kLargeGap),
+                        Text('Verify', style: textMediumBlack),
                         SizedBox(height: kSmallGap),
                         OTPTextField(
                           controller: otpController,
                           fieldStyle: FieldStyle.box,
+                          isDense: true,
+                          keyboardType: TextInputType.number,
                           outlineBorderRadius: 4,
                           style: textMediumBlack,
                           length: 6,
                           onCompleted: (pin) {
                             setState(() {
-                              code = pin;
+                              _verificationCode = pin;
+                              handleOtp = false;
                               isLoading = true;
-                            });
-                            Future.delayed(Duration(seconds: 5), () {
-                              setState(() {
-                                isLoading = false;
+                              Future.delayed(Duration(seconds: 5), () {
+                                setState(() {
+                                  isLoading = false;
+                                });
                               });
                             });
                           },
                           onChanged: (pin) {},
                         ),
-                        SizedBox(height: kExtraLargeGap),
-                        Center(
-                          child:
-                              (code != null)
-                                  ? (isLoading
-                                      ? LoadingAnimationWidget.staggeredDotsWave(
-                                        color: kBlack,
-                                        size: 48,
-                                      )
-                                      : Text(
-                                        'Verification Successful',
-                                        style: textLargeBlack.copyWith(
-                                          color: Colors.green,
-                                        ),
-                                      ))
-                                  : Container(),
-                        ),
                       ],
                     )
                     : Container(),
+                SizedBox(height: kExtraLargeGap),
+                Center(
+                  child: Container(
+                    child:
+                        (_verificationCode != null)
+                            ? (isLoading
+                                ? LoadingAnimationWidget.staggeredDotsWave(
+                                  color: kBlack,
+                                  size: 24.0,
+                                )
+                                : Text(
+                                  'Verification Successfull',
+                                  style: textMediumBlack.copyWith(
+                                    color: Colors.green[800],
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ))
+                            : Container(),
+                  ),
+                ),
               ],
             ),
           ],

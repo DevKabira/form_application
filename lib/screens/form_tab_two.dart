@@ -1,24 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:form_application/models/address.dart';
 import 'package:form_application/utils/constants.dart';
+import 'package:form_application/utils/database_helper.dart';
 
 class FormTabTwo extends StatefulWidget {
-  const FormTabTwo({super.key});
+  final TabController tabController;
+  final int? personalDetailsId;
+
+  const FormTabTwo({
+    super.key,
+    required this.tabController,
+    required this.personalDetailsId,
+  });
 
   @override
   State<FormTabTwo> createState() => _FormTabTwoState();
 }
 
 class _FormTabTwoState extends State<FormTabTwo> {
-  String? genderController;
-  TextEditingController dateController = TextEditingController();
-  final _houseNumberController = TextEditingController();
-  final _streetController = TextEditingController();
-  final _pinCodeController = TextEditingController();
+  // text fields controllers
   final _cityController = TextEditingController();
   final _stateController = TextEditingController();
   final _countryController = TextEditingController();
+  final _pinCodeController = TextEditingController();
+  final _addressLineController = TextEditingController();
 
-  void onPress() {}
+  // database instance
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
+  // what happens when the next button is pressed
+  void onPress() async {
+    String addressLine = _addressLineController.text.trim();
+    String pinCode = _pinCodeController.text.trim();
+    String city = _cityController.text.trim();
+    String state = _stateController.text.trim();
+    String country = _countryController.text.trim();
+
+    Address address = Address(
+      personalDetailsId: widget.personalDetailsId,
+      addressLine: addressLine,
+      pinCode: pinCode,
+      city: city,
+      state: state,
+      country: country,
+    );
+
+    int result = await databaseHelper.insertAddress(address);
+    result > 0 ? widget.tabController.animateTo(2) : null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +63,8 @@ class _FormTabTwoState extends State<FormTabTwo> {
             Column(
               children: [
                 TextFormField(
-                  controller: _houseNumberController,
-                  decoration: kInputDecoration('House number', 'Enter here'),
-                ),
-                SizedBox(height: kLargeGap),
-                TextFormField(
-                  controller: _streetController,
-                  decoration: kInputDecoration('Street', 'Enter here'),
+                  controller: _addressLineController,
+                  decoration: kInputDecoration('Address Line', 'Enter here'),
                 ),
                 SizedBox(height: kLargeGap),
                 TextFormField(
@@ -50,17 +74,17 @@ class _FormTabTwoState extends State<FormTabTwo> {
                 SizedBox(height: kLargeGap),
                 TextFormField(
                   controller: _cityController,
-                  decoration: kInputDecoration('City', 'Auto Generate'),
+                  decoration: kInputDecoration('City', 'Enter here'),
                 ),
                 SizedBox(height: kLargeGap),
                 TextFormField(
                   controller: _stateController,
-                  decoration: kInputDecoration('State', 'Auto Generate'),
+                  decoration: kInputDecoration('State', 'Enter here'),
                 ),
                 SizedBox(height: kLargeGap),
                 TextFormField(
                   controller: _countryController,
-                  decoration: kInputDecoration('Country', 'Auto Generate'),
+                  decoration: kInputDecoration('Country', 'Enter here'),
                 ),
               ],
             ),
