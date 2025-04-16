@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:form_application/models/personal_details.dart';
 import 'package:form_application/screens/form_screen.dart';
@@ -26,7 +28,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   void loadPersonalDetails() async {
     try {
       var personalDetailsData = await databaseHelper.getPersonalDetails();
-
       setState(() {
         personalDetailsList =
             personalDetailsData
@@ -35,7 +36,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         isLoading = false;
       });
     } catch (e) {
-      print('Error loading personal details: $e');
+      log('Error: $e');
       setState(() {
         isLoading = false;
       });

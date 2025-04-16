@@ -49,7 +49,6 @@
       int result = await databaseHelper.insertPersonalDetails(newEntry);
       if (result > 0) {
         id = result;
-        print(result);
       }
 
       // Navigate to the next tab

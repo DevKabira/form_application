@@ -114,6 +114,7 @@ AppBar kAppBar(String title, Icon icon, VoidCallback onTap) {
   return AppBar(
     automaticallyImplyLeading: false,
     backgroundColor: kBlack,
+    centerTitle: false,
     actionsPadding: EdgeInsets.only(right: 16),
     title: Text(title, style: textExtraLargeWhite),
     actions: [GestureDetector(onTap: onTap, child: icon)],

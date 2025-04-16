@@ -127,7 +127,6 @@ class _NewTabThreeState extends State<FormTabThree> {
                           value.length == 10
                               ? canSendOtp = true
                               : canSendOtp = false;
-                          print(value);
                         });
                       },
                     )

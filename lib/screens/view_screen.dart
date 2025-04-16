@@ -35,9 +35,6 @@ class _ViewScreenState extends State<ViewScreen> {
     PersonalDetails pd = PersonalDetails.fromMapObject(personalDetails.first);
     Address a = Address.fromMapObject(address.first);
     ContactDetails cd = ContactDetails.fromMapObject(contactDetails.first);
-    print(cd.contactType);
-    print(a.addressLine);
-    print(pd.firstName);
     setState(() {
       _name = '${pd.firstName} ${pd.lastName}';
       _dateOfBirth = pd.dateOfBirth;
@@ -62,7 +59,7 @@ class _ViewScreenState extends State<ViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: kAppBar('View Form', kClose, () {
+      appBar: kAppBar('View', kClose, () {
         Navigator.pop(context);
       }),
       backgroundColor: kWhite,
@@ -90,7 +87,7 @@ class _ViewScreenState extends State<ViewScreen> {
             SizedBox(height: kSmallGap,),
             Text('State :  $_state', style: textLargeBlack,),
             SizedBox(height: kSmallGap,),
-            Text('Country :  I$_country', style: textLargeBlack,),
+            Text('Country :  $_country', style: textLargeBlack,),
             SizedBox(height: kSmallGap,),
             SizedBox(height: kLargeGap,),
             SizedBox(height: kLargeGap,),
