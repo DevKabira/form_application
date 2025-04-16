@@ -45,9 +45,9 @@ class PersonalDetails {
 
   PersonalDetails.fromMapObject(Map<String, dynamic> map) {
     id = map['id'];
-    firstName = map['firstName'];
-    lastName = map['lastName'];
-    dateOfBirth = map['dateOfBirth'];
+    firstName = map['first_name'];
+    lastName = map['last_name'];
+    dateOfBirth = map['date_of_birth'];
     gender = map['gender'];
   }
 }

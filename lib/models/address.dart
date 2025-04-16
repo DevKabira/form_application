@@ -59,9 +59,9 @@ class Address {
 
   Address.fromMapObject(Map<String, dynamic> map) {
     id = map['id'];
-    personalDetailsId = map['personalDetailsId'];
-    addressLine = map['addressLine'];
-    pinCode = map['pinCode'];
+    personalDetailsId = map['personal_details_id'];
+    addressLine = map['address_line'];
+    pinCode = map['pin_code'];
     city = map['city'];
     state = map['state'];
     country = map['country'];

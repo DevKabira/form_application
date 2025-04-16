@@ -43,9 +43,9 @@ class ContactDetails {
 
   ContactDetails.fromMapObject(Map<String, dynamic> map) {
     id = map['id'];
-    personalDetailsId = map['personalDetailsId'];
-    contactType = map['contactType'];
-    contactValue = map['contactValue'];
-    isVerified = map['isVerified'];
+    personalDetailsId = map['personal_details_id'];
+    contactType = map['contact_type'];
+    contactValue = map['contact_value'];
+    isVerified = map['is_verified'];
   }
 }

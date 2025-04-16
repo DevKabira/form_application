@@ -21,6 +21,7 @@ class _NewTabThreeState extends State<FormTabThree> {
   final DatabaseHelper databaseHelper = DatabaseHelper();
 
   final otpController = OtpFieldController();
+  final _contactValueController = TextEditingController();
   ContactType? _contactType;
   String? _verificationCode;
   int _isVerified = 0;
@@ -39,7 +40,7 @@ class _NewTabThreeState extends State<FormTabThree> {
     int personalDetailsId = widget.personalDetailsId!;
     int isVerified = _isVerified;
     String contactType = _contactType!.name;
-    String contactValue = _verificationCode!;
+    String contactValue = _contactValueController.text;
 
     ContactDetails contactDetails = ContactDetails(
       personalDetailsId: personalDetailsId,
@@ -102,6 +103,7 @@ class _NewTabThreeState extends State<FormTabThree> {
                 SizedBox(height: kSmallGap),
                 _contactType != null
                     ? TextFormField(
+                      controller: _contactValueController,
                       decoration: kInputDecoration(
                         '${_contactType!.name[0].toUpperCase()}${_contactType!.name.substring(1).toLowerCase()}',
                         'Enter here',
@@ -125,6 +127,7 @@ class _NewTabThreeState extends State<FormTabThree> {
                           value.length == 10
                               ? canSendOtp = true
                               : canSendOtp = false;
+                          print(value);
                         });
                       },
                     )
