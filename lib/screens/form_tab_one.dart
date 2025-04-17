@@ -25,7 +25,49 @@ class _FormTabOneState extends State<FormTabOne> {
   final TextEditingController dateController = TextEditingController();
   String? genderController;
 
+  @override
+  void initState() {
+    if (widget.formData.personalDetails != null) {
+      _fNameController.text = widget.formData.personalDetails!.firstName ?? '';
+      _lNameController.text = widget.formData.personalDetails!.lastName ?? '';
+      dateController.text = widget.formData.personalDetails!.dateOfBirth ?? '';
+      genderController = widget.formData.personalDetails!.gender;
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.formData.personalDetails = PersonalDetails(
+      firstName: _fNameController.text,
+      lastName: _lNameController.text,
+      dateOfBirth: dateController.text,
+      gender: genderController,
+    );
+
+    _fNameController.dispose();
+    _lNameController.dispose();
+    dateController.dispose();
+    super.dispose();
+  }
+
   void onPress() async {
+    if (_fNameController.text.trim().isEmpty ||
+        _lNameController.text.trim().isEmpty ||
+        dateController.text.trim().isEmpty ||
+        genderController == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     widget.formData.personalDetails = PersonalDetails(
       firstName: _fNameController.text.trim(),
       lastName: _lNameController.text.trim(),

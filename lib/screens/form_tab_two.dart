@@ -20,17 +20,60 @@ class FormTabTwo extends StatefulWidget {
 class _FormTabTwoState extends State<FormTabTwo> {
   // text fields controllers
   final TextEditingController _cityController = TextEditingController();
-
   final TextEditingController _stateController = TextEditingController();
-
   final TextEditingController _countryController = TextEditingController();
-
   final TextEditingController _pinCodeController = TextEditingController();
-
   final TextEditingController _addressLineController = TextEditingController();
+
+  @override
+  void initState() {
+    if (widget.formData.address != null) {
+      _cityController.text = widget.formData.address!.city ?? '';
+      _stateController.text = widget.formData.address!.state ?? '';
+      _countryController.text = widget.formData.address!.country ?? '';
+      _pinCodeController.text = widget.formData.address!.pinCode ?? '';
+      _addressLineController.text = widget.formData.address!.addressLine ?? '';
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.formData.address = Address(
+      addressLine: _addressLineController.text,
+      pinCode: _pinCodeController.text,
+      city: _cityController.text,
+      state: _stateController.text,
+      country: _countryController.text,
+    );
+    _cityController.dispose();
+    _stateController.dispose();
+    _countryController.dispose();
+    _pinCodeController.dispose();
+    _addressLineController.dispose();
+
+    super.dispose();
+  }
 
   // what happens when the next button is pressed
   void onPress() async {
+    if (_addressLineController.text.trim().isEmpty ||
+        _pinCodeController.text.trim().isEmpty ||
+        _cityController.text.trim().isEmpty ||
+        _stateController.text.trim().isEmpty ||
+        _countryController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+
     widget.formData.address = Address(
       addressLine: _addressLineController.text.trim(),
       pinCode: _pinCodeController.text.trim(),

@@ -88,10 +88,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           // Show the snackbar after the item has been removed
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(
-                                'Form Deleted successfully',
-                                style: textExtraLargeWhite,
-                              ),
+                              content: Text('Form deleted successfully'),
+                              backgroundColor: Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                              margin: EdgeInsets.all(16),
+                              duration: Duration(seconds: 2),
                             ),
                           );
                         },

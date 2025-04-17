@@ -37,7 +37,37 @@ class _NewTabThreeState extends State<FormTabThree> {
     });
   }
 
+  @override
+  void initState() {
+    if (widget.formData.contactDetails != null) {
+      _contactValueController.text =
+          widget.formData.contactDetails!.contactValue ?? '';
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.formData.contactDetails = ContactDetails(
+      contactValue: _contactValueController.text,
+    );
+    _contactValueController.dispose();
+    super.dispose();
+  }
+
   void onPress() async {
+    if (_contactType == null || _contactValueController.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
     int personalId = await databaseHelper.insertPersonalDetails(
       widget.formData.personalDetails!,
     );
@@ -54,6 +84,15 @@ class _NewTabThreeState extends State<FormTabThree> {
     await databaseHelper.insertContactDetails(widget.formData.contactDetails!);
 
     if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Form successfully submitted!'),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(16),
+          duration: Duration(seconds: 2),
+        ),
+      );
       Navigator.of(context).pop();
     }
   }
@@ -106,7 +145,10 @@ class _NewTabThreeState extends State<FormTabThree> {
                 SizedBox(height: kSmallGap),
                 _contactType != null
                     ? TextFormField(
-                      keyboardType: _contactType == ContactType.phone ? TextInputType.number : TextInputType.emailAddress,
+                      keyboardType:
+                          _contactType == ContactType.phone
+                              ? TextInputType.number
+                              : TextInputType.emailAddress,
                       controller: _contactValueController,
                       decoration: kInputDecoration(
                         StringHelper.capitalize(_contactType!.name),
