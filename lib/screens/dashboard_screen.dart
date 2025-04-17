@@ -5,6 +5,7 @@ import 'package:form_application/screens/form_screen.dart';
 import 'package:form_application/screens/view_screen.dart';
 import 'package:form_application/utils/constants.dart';
 import 'package:form_application/utils/database_helper.dart';
+import 'package:form_application/utils/string_helper.dart';
 import 'package:form_application/widgets/card_widget.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -70,7 +71,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     itemBuilder: (context, index) {
                       final person = personalDetailsList[index];
                       final fullName =
-                          'Name - ${person.firstName ?? ""} ${person.lastName ?? ""}';
+                          'Name - ${StringHelper.capitalize(person.firstName)} ${StringHelper.capitalize(person.lastName)}';
                       final dateOfBirth = 'DOB - ${person.dateOfBirth}';
                       final gender = 'Gender - ${person.gender}';
                       return Dismissible(

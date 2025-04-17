@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:form_application/models/address.dart';
 import 'package:form_application/models/contact_details.dart';
+import 'package:form_application/models/form_data.dart';
 import 'package:form_application/models/personal_details.dart';
 import 'package:form_application/utils/constants.dart';
 import 'package:form_application/utils/database_helper.dart';
+import 'package:form_application/utils/string_helper.dart';
 import 'package:intl/intl.dart';
 
 class ViewScreen extends StatefulWidget {
@@ -16,8 +18,9 @@ class ViewScreen extends StatefulWidget {
 
 class _ViewScreenState extends State<ViewScreen> {
   bool _isEditable = false;
-  int? addressId;
-  int? contactId;
+  FormData? formData;
+  FormData? originalFormData;
+
   final TextEditingController _fnameController = TextEditingController();
   final TextEditingController _lnameController = TextEditingController();
   final TextEditingController _dateOfBirthController = TextEditingController();
@@ -29,41 +32,42 @@ class _ViewScreenState extends State<ViewScreen> {
   final TextEditingController _countryController = TextEditingController();
   final TextEditingController _contactTypController = TextEditingController();
   final TextEditingController _contactValueController = TextEditingController();
-  final TextEditingController _isVerifiedController = TextEditingController();
-  PersonalDetails? _originalPersonalDetails;
-  Address? _originalAddress;
-  ContactDetails? _originalContactDetails;
 
   DatabaseHelper databaseHelper = DatabaseHelper();
 
-  getData(int id) async {
-    var personalDetails = await databaseHelper.getPersonalDetailsById(id);
-    var address = await databaseHelper.getAddressBypersonalDetailsId(id);
-    var contactDetails = await databaseHelper
-        .getContactDetialsByPersonalDetailsId(id);
-    PersonalDetails pd = PersonalDetails.fromMapObject(personalDetails.first);
-    Address a = Address.fromMapObject(address.first);
-    ContactDetails cd = ContactDetails.fromMapObject(contactDetails.first);
+  Future<void> getData(int id) async {
+    final pdMap = await databaseHelper.getPersonalDetailsById(id);
+    final aMap = await databaseHelper.getAddressBypersonalDetailsId(id);
+    final cdMap = await databaseHelper.getContactDetialsByPersonalDetailsId(id);
+
+    final PersonalDetails personalDetails = PersonalDetails.fromMapObject(
+      pdMap.first,
+    );
+    final Address address = Address.fromMapObject(aMap.first);
+    final ContactDetails contactDetails = ContactDetails.fromMapObject(
+      cdMap.first,
+    );
 
     setState(() {
-      _originalPersonalDetails = pd;
-      _originalAddress = a;
-      _originalContactDetails = cd;
+      formData = FormData(
+        personalDetails: personalDetails,
+        address: address,
+        contactDetails: contactDetails,
+      );
 
-      addressId = a.id!;
-      contactId = cd.id!;
-      _fnameController.text = pd.firstName ?? '';
-      _lnameController.text = pd.lastName ?? '';
-      _dateOfBirthController.text = pd.dateOfBirth ?? '';
-      _genderController.text = pd.gender ?? '';
-      _addressLineController.text = a.addressLine ?? '';
-      _pinCodeController.text = a.pinCode ?? '';
-      _cityController.text = a.city ?? '';
-      _stateController.text = a.state ?? '';
-      _countryController.text = a.country ?? '';
-      _contactTypController.text = cd.contactType ?? '';
-      _contactValueController.text = cd.contactValue ?? '';
-      _isVerifiedController.text = cd.isVerified.toString();
+      originalFormData = formData!.copy();
+
+      _fnameController.text = StringHelper.capitalize(personalDetails.firstName);
+      _lnameController.text = StringHelper.capitalize(personalDetails.lastName);
+      _dateOfBirthController.text = StringHelper.capitalize(personalDetails.dateOfBirth);
+      _genderController.text = StringHelper.capitalize(personalDetails.gender);
+      _addressLineController.text = StringHelper.capitalize(address.addressLine);
+      _pinCodeController.text = StringHelper.capitalize(address.pinCode);
+      _cityController.text = StringHelper.capitalize(address.city);
+      _stateController.text = StringHelper.capitalize(address.state);
+      _countryController.text = StringHelper.capitalize(address.country);
+      _contactTypController.text = StringHelper.capitalize(contactDetails.contactType);
+      _contactValueController.text = StringHelper.capitalize(contactDetails.contactValue);
     });
   }
 
@@ -86,8 +90,46 @@ class _ViewScreenState extends State<ViewScreen> {
     _countryController.dispose();
     _contactTypController.dispose();
     _contactValueController.dispose();
-    _isVerifiedController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveChanges() async {
+    final originalPD = originalFormData!.personalDetails!;
+    final originalA = originalFormData!.address!;
+    final originalCD = originalFormData!.contactDetails!;
+
+    final updatedPD = originalPD.copyWith(
+      firstName:
+          _fnameController.text ,
+      lastName:
+          _lnameController.text,
+      dateOfBirth:
+          _dateOfBirthController.text ,
+      gender:
+          _genderController.text ,
+    );
+
+    final updatedA = originalA.copyWith(
+      addressLine: _addressLineController.text,
+      pinCode: _pinCodeController.text,
+      city: _cityController.text,
+      state: _stateController.text,
+      country: _countryController.text,
+    );
+
+    final updatedCD = originalCD.copyWith(
+      contactValue: _contactValueController.text,
+    );
+
+    if (updatedPD != originalPD) {
+      await databaseHelper.updatePersonalDetails(updatedPD);
+    }
+    if (updatedA != originalA) {
+      await databaseHelper.updateAddress(updatedA);
+    }
+    if (updatedCD != originalCD) {
+      await databaseHelper.updateContactDetails(updatedCD);
+    }
   }
 
   @override
@@ -104,50 +146,13 @@ class _ViewScreenState extends State<ViewScreen> {
             : Icon(Icons.edit, color: kWhite),
         () async {
           if (_isEditable) {
-            final updatedPersonalDetails = PersonalDetails.withId(
-              id: widget.id,
-              firstName: _fnameController.text,
-              lastName: _lnameController.text,
-              dateOfBirth: _dateOfBirthController.text,
-              gender: _genderController.text,
-            );
-            final updatedAddress = Address.withId(
-              id: addressId,
-              personalDetailsId: widget.id,
-              addressLine: _addressLineController.text,
-              pinCode: _pinCodeController.text,
-              city: _cityController.text,
-              state: _stateController.text,
-              country: _countryController.text,
-            );
-            final updateContactDetails = ContactDetails.withId(
-              id: contactId,
-              personalDetailsId: widget.id,
-              contactType: _contactTypController.text,
-              contactValue: _contactValueController.text,
-              isVerified: _originalContactDetails!.isVerified,
-            );
-            if (_originalPersonalDetails != null &&
-                _originalAddress != null &&
-                _originalContactDetails != null) {
-              if (_originalPersonalDetails != updatedPersonalDetails) {
-                await databaseHelper.updatePersonalDetails(
-                  updatedPersonalDetails,
-                );
-              }
-
-              if (_originalAddress != updatedAddress) {
-                await databaseHelper.updateAddress(updatedAddress);
-              }
-
-              if (_originalContactDetails != updateContactDetails) {
-                await databaseHelper.updateContactDetails(updateContactDetails);
-              }
-            }
-            Navigator.pop(context, true);
+            await _saveChanges();
             setState(() {
               _isEditable = !_isEditable;
             });
+            if (mounted) {
+              Navigator.pop(context, true);
+            }
           } else {
             setState(() {
               _isEditable = !_isEditable;

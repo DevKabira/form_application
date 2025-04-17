@@ -48,4 +48,20 @@ class ContactDetails {
     contactValue = map['contact_value'];
     isVerified = map['is_verified'];
   }
+
+  ContactDetails copyWith({
+    int? id,
+    int? personalDetailsId,
+    String? contactType,
+    String? contactValue,
+    int? isVerified,
+  }) {
+    return ContactDetails.withId(
+      id: id ?? this.id,
+      personalDetailsId: personalDetailsId ?? this.personalDetailsId,
+      contactType: contactType ?? this.contactType,
+      contactValue: contactValue ?? this.contactValue,
+      isVerified: isVerified ?? this.isVerified,
+    );
+  }
 }

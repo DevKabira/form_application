@@ -11,6 +11,7 @@ class PersonalDetails {
     this.dateOfBirth,
     this.gender,
   });
+
   PersonalDetails.withId({
     this.id,
     this.firstName,
@@ -49,5 +50,21 @@ class PersonalDetails {
     lastName = map['last_name'];
     dateOfBirth = map['date_of_birth'];
     gender = map['gender'];
+  }
+
+  PersonalDetails copyWith({
+    int? id,
+    String? firstName,
+    String? lastName,
+    String? dateOfBirth,
+    String? gender,
+  }) {
+    return PersonalDetails.withId(
+      id: id ?? this.id,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      dateOfBirth: dateOfBirth ?? this.dateOfBirth,
+      gender: gender ?? this.gender,
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:form_application/models/form_data.dart';
 import 'package:form_application/screens/form_tab_one.dart';
 import 'package:form_application/screens/form_tab_three.dart';
 import 'package:form_application/screens/form_tab_two.dart';
@@ -12,8 +13,9 @@ class FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<FormScreen> {
+  final FormData _formData = FormData(); //centralized form data
+
   late TabController _tabController;
-  int? _personalDetailsId;
 
   @override
   Widget build(BuildContext context) {
@@ -46,17 +48,13 @@ class _FormScreenState extends State<FormScreen> {
                     children: [
                       FormTabOne(
                         tabController: _tabController,
-                        onSaved: (id) {
-                          setState(() {
-                            _personalDetailsId = id;
-                          });
-                        },
+                        formData: _formData,
                       ),
                       FormTabTwo(
                         tabController: _tabController,
-                        personalDetailsId: _personalDetailsId,
+                        formData: _formData,
                       ),
-                      FormTabThree(personalDetailsId: _personalDetailsId,),
+                      FormTabThree(formData: _formData),
                     ],
                   ),
                 );

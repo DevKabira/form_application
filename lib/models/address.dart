@@ -66,4 +66,24 @@ class Address {
     state = map['state'];
     country = map['country'];
   }
+  
+  Address copyWith({
+    int? id,
+    int? personalDetailsId,
+    String? addressLine,
+    String? pinCode,
+    String? city,
+    String? state,
+    String? country,
+  }) {
+    return Address.withId(
+      id: id ?? this.id,
+      personalDetailsId: personalDetailsId ?? this.personalDetailsId,
+      addressLine: addressLine ?? this.addressLine,
+      pinCode: pinCode ?? this.pinCode,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      country: country ?? this.country,
+    );
+  }
 }
