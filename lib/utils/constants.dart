@@ -115,9 +115,34 @@ AppBar kAppBar(String title, Icon icon, VoidCallback onTap) {
     automaticallyImplyLeading: false,
     backgroundColor: kBlack,
     centerTitle: false,
-    actionsPadding: EdgeInsets.only(right: 16),
     title: Text(title, style: textExtraLargeWhite),
-    actions: [GestureDetector(onTap: onTap, child: icon)],
+    actions: [IconButton(onPressed: onTap, icon: icon)],
+  );
+}
+
+AppBar kEditAppBar(
+  String title,
+  Icon icon,
+  VoidCallback onTap,
+  Icon changableIcon,
+  VoidCallback onPress,
+) {
+  return AppBar(
+    automaticallyImplyLeading: false,
+    backgroundColor: kBlack,
+    centerTitle: false,
+
+    title: Text(title, style: textExtraLargeWhite),
+    actions: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          IconButton(onPressed: onPress, icon: changableIcon),
+          IconButton(onPressed: onTap, icon: icon),
+        ],
+      ),
+    ],
   );
 }
 

@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:form_application/screens/view_screen.dart';
 import 'package:form_application/utils/constants.dart';
 
 class CardWidget extends StatelessWidget {
-  final String title;
-  final int id;
-  const CardWidget({super.key, required this.title, required this.id});
+  final String name;
+  final String dob;
+  final String gender;
+  const CardWidget({
+    super.key,
+    required this.name,
+    required this.dob,
+    required this.gender,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4.0),
-        boxShadow: [BoxShadow(
-          color: Color(0xFFE5E5E5),
-          blurRadius: 2,
-          spreadRadius: 1
-        )],
+        boxShadow: [
+          BoxShadow(color: Color(0xFFE5E5E5), blurRadius: 2, spreadRadius: 1),
+        ],
         color: kWhite,
-        border: Border(left: BorderSide(color: kBlack, width: 3))
+        border: Border(left: BorderSide(color: kBlack, width: 3)),
       ),
       child: Padding(
         padding: kLargePadding,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: textLargeBlack),
-            IconButton(onPressed: (){
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => ViewScreen(id: id)));
-            }, icon: Icon(Icons.file_open, color: kBlack,))
+            Text(name, style: textLargeBlack),
+            Text(dob, style: textLargeBlack),
+            Text(gender, style: textLargeBlack),
           ],
         ),
       ),

@@ -71,7 +71,9 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getPersonalDetails() async {
     Database db = await database;
 
-    var result = await db.query('personal_details');
+    var result = await db.rawQuery('''
+      SELECT * FROM personal_details ORDER BY first_name ASC
+    ''');
     return result;
   }
 
@@ -126,65 +128,6 @@ class DatabaseHelper {
     return result;
   }
 
-  Future<List<Map<String, dynamic>>> getFullProfiles() async {
-    Database db = await database;
-
-    var result = db.rawQuery('''
-      SELECT 
-        pd.id AS personal_id,
-        pd.first_name,
-        pd.last_name,
-        pd.date_of_birth,
-        pd.gender,
-
-        a.address_line,
-        a.pin_code,
-        a.city,
-        a.state,
-        a.country,
-
-        cd.contact_type,
-        cd.contact_value,
-        cd.is_verified
-      FROM personal_details pd
-      LEFT JOIN address a ON pd.id = a.personal_details_id
-      LEFT JOIN contact_details cd ON pd.id = cd.personal_details_id
-    ''');
-    return result;
-  }
-
-  Future<List<Map<String, dynamic>>> getFullProfileBypersonalDetailsId(
-    int personalDetailsId,
-  ) async {
-    Database db = await database;
-
-    var result = db.rawQuery(
-      '''
-      SELECT 
-        pd.id AS personal_id,
-        pd.first_name,
-        pd.last_name,
-        pd.date_of_birth,
-        pd.gender,
-
-        a.address_line,
-        a.pin_code,
-        a.city,
-        a.state,
-        a.country,
-
-        cd.contact_type,
-        cd.contact_value,
-        cd.is_verified
-      FROM personal_details pd
-      LEFT JOIN address a ON pd.id = a.personal_details_id
-      LEFT JOIN contact_details cd ON pd.id = cd.personal_details_id
-      Where id = ?
-    ''',
-      [personalDetailsId],
-    );
-    return result;
-  }
 
   // Insert operation
   Future<int> insertPersonalDetails(PersonalDetails personalDetails) async {

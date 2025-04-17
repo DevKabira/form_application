@@ -23,7 +23,7 @@ class PersonalDetails {
   String get getFirstName => firstName!;
   String get getLastName => lastName!;
   String get getDateOfBirth => dateOfBirth!;
-  String get getRender => gender!;
+  String get getGender => gender!;
 
   set setFirstName(String firstName) => this.firstName = firstName;
   set setLastName(String lastName) => this.lastName = lastName;

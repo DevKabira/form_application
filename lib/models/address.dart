@@ -15,7 +15,7 @@ class Address {
     this.state,
     this.country,
   });
-  Address.withId(
+  Address.withId({
     this.id,
     this.personalDetailsId,
     this.addressLine,
@@ -23,7 +23,7 @@ class Address {
     this.city,
     this.state,
     this.country,
-  );
+  });
 
   int get getId => id!;
   int get getPersonalDetailsId => personalDetailsId!;

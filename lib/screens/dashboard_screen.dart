@@ -1,8 +1,8 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:form_application/models/personal_details.dart';
 import 'package:form_application/screens/form_screen.dart';
+import 'package:form_application/screens/view_screen.dart';
 import 'package:form_application/utils/constants.dart';
 import 'package:form_application/utils/database_helper.dart';
 import 'package:form_application/widgets/card_widget.dart';
@@ -70,11 +70,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     itemBuilder: (context, index) {
                       final person = personalDetailsList[index];
                       final fullName =
-                          '${person.firstName ?? ""} ${person.lastName ?? ""}';
+                          'Name - ${person.firstName ?? ""} ${person.lastName ?? ""}';
+                      final dateOfBirth = 'DOB - ${person.dateOfBirth}';
+                      final gender = 'Gender - ${person.gender}';
+                      return Dismissible(
+                        key: Key(
+                          person.id.toString(),
+                        ), // Use person.id as the key
+                        onDismissed: (direction) {
+                          // Ensure the item is removed from the list
+                          databaseHelper.deletePersonalDetails(person.id!);
+                          setState(() {
+                            personalDetailsList.removeAt(index);
+                          });
 
-                      return CardWidget(
-                        title: fullName.trim(),
-                        id: person.id ?? 0,
+                          // Show the snackbar after the item has been removed
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Form Deleted successfully',
+                                style: textExtraLargeWhite,
+                              ),
+                            ),
+                          );
+                        },
+                        direction: DismissDirection.endToStart,
+                        background: Container(
+                          color: Colors.red,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text('Delete', style: textExtraLargeWhite),
+                              SizedBox(width: kLargeGap),
+                            ],
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () async {
+                            final result = await Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => ViewScreen(id: person.id),
+                              ),
+                            );
+                            if (result == true) {
+                              loadPersonalDetails();
+                            }
+                          },
+                          child: CardWidget(
+                            name: fullName.trim(),
+                            dob: dateOfBirth.trim(),
+                            gender: gender.trim(),
+                          ),
+                        ),
                       );
                     },
                   ),
